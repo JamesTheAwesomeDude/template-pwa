@@ -13,9 +13,11 @@ const cacheFiles = [
 
 self.addEventListener('fetch', event => {
 	event.respondWith(
-		caches.match(event.request).then(response =>
-			response || caches.open(cacheName).then(cache =>
-				cache.put(event.request, response.clone)
+		caches.match(event.request).then(cachedResponse =>
+			cachedResponse || fetch(event.request).then(response =>
+				caches.open(cacheName).then(cache =>
+					cache.put(event.request, response.clone)
+				)
 			)
 		)
 	);
